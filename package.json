@@ -1,0 +1,13 @@
+{
+  "name": "9router-cloud",
+  "version": "1.0.0",
+  "description": "9Router cloud gateway on Render",
+  "main": "server.js",
+  "scripts": {
+    "build": "npm install -g 9router@latest --prefer-online",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "9router": "latest"
+  }
+}
