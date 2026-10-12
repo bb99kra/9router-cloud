@@ -1,14 +1,22 @@
-const { spawn } = require('child_process');
+const path = require('path');
+const fs = require('fs');
 
-const port = process.env.PORT || 20128;
-console.log(`[9Router Cloud] Launching on port ${port}...`);
+let customServerPath = path.join(__dirname, 'node_modules', '9router', 'app', 'custom-server.js');
 
-// Try running globally installed 9router or fallback to npx
-const child = spawn('sh', ['-c', `9router -p ${port} -n -l || npx 9router -p ${port} -n -l`], {
-  stdio: 'inherit'
-});
+if (!fs.existsSync(customServerPath)) {
+  try {
+    const globalRoot = require('child_process').execSync('npm root -g', { encoding: 'utf8' }).trim();
+    customServerPath = path.join(globalRoot, '9router', 'app', 'custom-server.js');
+  } catch (e) {
+    console.error('Error finding global 9router:', e);
+  }
+}
 
-child.on('exit', (code) => {
-  console.log(`[9Router Cloud] Process exited with code ${code}`);
-  process.exit(code || 0);
-});
+if (fs.existsSync(customServerPath)) {
+  const port = process.env.PORT || 20128;
+  console.log(`[9Router Cloud] Launching 9Router on port ${port}...`);
+  require(customServerPath);
+} else {
+  console.error('[9Router Cloud] Fatal: Could not find 9router app/custom-server.js');
+  process.exit(1);
+}

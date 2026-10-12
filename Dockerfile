@@ -2,10 +2,13 @@ FROM node:20-bullseye-slim
 
 WORKDIR /app
 
-# Install latest 9router with --prefer-online as requested
-RUN npm install -g 9router@latest --prefer-online
+# Install latest 9router with --prefer-online
+RUN npm install 9router@latest --prefer-online
+
+COPY server.js .
 
 ENV PORT=20128
+ENV HOSTNAME=0.0.0.0
 EXPOSE 20128
 
-CMD ["sh", "-c", "9router -p ${PORT:-20128} -n -l"]
+CMD ["node", "server.js"]
